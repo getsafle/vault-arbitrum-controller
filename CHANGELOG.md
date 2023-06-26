@@ -19,3 +19,4 @@
 ### 1.0.3 (2023-6-26)
 
 - Added cicd to push npm package
+- NPM and node version fixes
