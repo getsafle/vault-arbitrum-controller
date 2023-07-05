@@ -33,3 +33,4 @@
 - Updated CI for test cases
 - Added coverage report for the test cases
 - Added nyc dependency for the coverage report
+- Adding badges for readme.md
