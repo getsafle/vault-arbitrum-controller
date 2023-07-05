@@ -19,4 +19,18 @@
 ### 1.0.3 (2023-6-26)
 
 - Added cicd to push npm package
+
+### 1.0.4 (2023-07-2)
+
 - NPM and node version fixes
+
+### 1.0.5 (2023-07-04)
+
+- Added test suite for Arbitrum controller
+
+### 1.0.6 (2023-07-04)
+
+- Updated CI for test cases
+- Added coverage report for the test cases
+- Added nyc dependency for the coverage report
+- Adding badges for readme.md
