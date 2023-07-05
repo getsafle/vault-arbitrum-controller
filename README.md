@@ -1,7 +1,6 @@
 # Vault-arbitrum-controller <code><a href="https://www.docker.com/" target="_blank"><img height="50" src="https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630"></a></code>
 
-<img alt="Static Badge" src="https://img.shields.io/badge/version-v1.0.6-blue">  <img alt="Static Badge" src="https://img.shields.io/badge/nvm-v6.0.6-red">  <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-green">   [![Discussions][discussions-badge]][discussions-link]
- <img alt="Static Badge" src="https://img.shields.io/badge/Arbitrum_controller-documentation-purple">   
+[![npm version](https://badge.fury.io/js/@getsafle%2Fvault-arbitrum-controller.svg)](https://badge.fury.io/js/@getsafle%2Fvault-arbitrum-controller) <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-green">   [![Discussions][discussions-badge]][discussions-link] <img alt="Static Badge" src="https://img.shields.io/badge/Arbitrum_controller-documentation-purple">   
 
 A module written in javascript for managing various keyrings of Arbitrum accounts, encrypting them, and using them.
 
