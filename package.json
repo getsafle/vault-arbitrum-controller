@@ -1,6 +1,6 @@
 {
   "name": "@getsafle/vault-arbitrum-controller",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "arbitrum controller for safle vault",
   "engines": {
     "node": ">= 10"
