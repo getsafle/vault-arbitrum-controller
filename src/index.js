@@ -506,10 +506,22 @@ class KeyringController extends EventEmitter {
     }
 
     async getFees(arbitrumTx, web3) {
-        const { from, to, value, data, gasLimit } = arbitrumTx
-        const estimate = gasLimit ? gasLimit : await web3.eth.estimateGas({ to, from, value, data })
-        const gasPrice = await web3.eth.getGasPrice();
-        return { transactionFees: estimate * gasPrice }
+        const { from, to, value, data, manualLimit } = arbitrumTx
+        const gasLimit = manualLimit ? manualLimit : await web3.eth.estimateGas({ to, from, value, data })
+        const gasPrice = parseInt(await web3.eth.getGasPrice());
+        const fees = {
+            "slow":{
+                "gasPrice": parseInt(gasPrice)
+            },
+            "standard":{
+                "gasPrice": gasPrice + parseInt(gasPrice * 0.05)
+            },
+            "fast":{
+                "gasPrice": gasPrice + parseInt(gasPrice * 0.1)
+            },
+            baseFee: 0
+        }
+        return { gasLimit: gasLimit, fees: fees}
     }
 }
 
