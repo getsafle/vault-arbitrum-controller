@@ -47,3 +47,4 @@
 ### 1.0.9 (2023-12-12)
 
 - Added gas estimation for EIP-1559 transaction on arbitrum.
+- Added support for Type-2 transactions signing.
