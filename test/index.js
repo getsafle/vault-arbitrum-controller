@@ -121,46 +121,4 @@ describe('Initialize wallet ', () => {
         const getEstimate = await arbitrumKeyring.getFees(tx, web3)
         console.log(" get gas estimate  ", getEstimate)
     })
-
-    it("sign Transaction ", async () => {
-
-        const accounts = await arbitrumKeyring.getAccounts()
-        const from = accounts[0]
-        const web3 = new Web3(TESTNET.URL);
-
-        const count = await web3.eth.getTransactionCount(from);
-
-        const defaultNonce = await web3.utils.toHex(count);
-
-        const rawTx = {
-            to: '0x9E1447ea3F6abA7a5D344B360B95Fd9BAE049448',
-            from,
-            value: web3.utils.numberToHex(web3.utils.toWei('0.01', 'ether')),
-            gasLimit: web3.utils.numberToHex(25000),
-            maxPriorityFeePerGas: web3.utils.numberToHex(web3.utils.toWei('55', 'gwei')),
-            maxFeePerGas: web3.utils.numberToHex(web3.utils.toWei('56', 'gwei')),
-            nonce: defaultNonce,
-            data: '0x00',
-            type: '0x2',
-            chainId: 421613,
-        };
-        /*
-        const rawTx2 = {
-            type: 2,
-            nonce: 0,
-            to: "0xacde0f575d8caf7bdba417326797c1a1d1b21f88", // Address to send to
-            maxPriorityFeePerGas: 10000, // Recommended maxPriorityFeePerGas
-            maxFeePerGas: 10000, // Recommended maxFeePerGas
-            value: web3.utils.toHex(1000000), // .01 ETH
-            gasLimit: "21000", // basic transaction costs exactly 21000
-            chainId: 421613, 
-          };
-        */
-        const privateKey = await arbitrumKeyring.exportAccount(accounts[0])
-        const signedTX = await arbitrumKeyring.signTransaction(rawTx, privateKey)
-        console.log("signedTX ", signedTX)
-
-      //  const sentTX = await arbitrumKeyring.sendTransaction(signedTX, web3)
-       // console.log("sentTX ", sentTX)
-    })
 })

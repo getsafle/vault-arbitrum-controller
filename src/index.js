@@ -12,6 +12,9 @@ const { normalize: normalizeAddress } = require('eth-sig-util')
 const SimpleKeyring = require('eth-simple-keyring')
 const HdKeyring = require('eth-hd-keyring')
 
+const axios = require('axios')
+let chainId;
+
 const keyringTypes = [
     SimpleKeyring,
     HdKeyring,
@@ -230,7 +233,7 @@ class KeyringController extends EventEmitter {
 
     importWallet(_privateKey) {
         try {
-            
+
             if (_privateKey.startsWith('0x')) {
                 _privateKey = _privateKey.slice(2)
             }
@@ -505,23 +508,46 @@ class KeyringController extends EventEmitter {
         return { transactionDetails: receipt.transactionHash }
     }
 
-    async getFees(arbitrumTx, web3) {
-        const { from, to, value, data, manualLimit } = arbitrumTx
-        const gasLimit = manualLimit ? manualLimit : await web3.eth.estimateGas({ to, from, value, data })
-        const gasPrice = parseInt(await web3.eth.getGasPrice());
-        const fees = {
-            "slow":{
-                "gasPrice": parseInt(gasPrice)
+    /**
+    * get Fees method to get the fees for Optimism Chain
+    *
+    * @param {Object} rawTx - Rawtransaction - {from,to,value,data, chainId}  
+    * @param {Object} web3 - web3 object.
+    * @returns {Object} - gasLimit for the transaction and fees for the transaction
+    */
+    async getFees(rawTx, web3) {
+        const { from, to, value, data } = rawTx
+        const gasLimit = await web3.eth.estimateGas({ to, from, value, data });
+        chainId = await web3.eth.getChainId();
+
+        const response = await axios({
+            url: `https://gas-api.metaswap.codefi.network/networks/42161/suggestedGasFees`,
+            method: 'GET',
+        });
+
+        let fees = {
+            slow: {
+                maxPriorityFeePerGas: parseInt(parseFloat(response.data.low.suggestedMaxPriorityFeePerGas) * Math.pow(10, 9)),
+                maxFeePerGas: parseInt(parseFloat(response.data.low.suggestedMaxFeePerGas) * Math.pow(10, 9)),
+
             },
-            "standard":{
-                "gasPrice": gasPrice + parseInt(gasPrice * 0.05)
+            medium: {
+                maxPriorityFeePerGas: parseInt(parseFloat(response.data.medium.suggestedMaxPriorityFeePerGas) * Math.pow(10, 9)),
+                maxFeePerGas: parseInt(parseFloat(response.data.medium.suggestedMaxFeePerGas) * Math.pow(10, 9)),
+
             },
-            "fast":{
-                "gasPrice": gasPrice + parseInt(gasPrice * 0.1)
+            fast: {
+                maxPriorityFeePerGas: parseInt(parseFloat(response.data.high.suggestedMaxPriorityFeePerGas) * Math.pow(10, 9)),
+                maxFeePerGas: parseInt(parseFloat(response.data.high.suggestedMaxFeePerGas) * Math.pow(10, 9)),
+
             },
-            baseFee: 0
+            baseFee: parseInt(parseFloat(response.data.estimatedBaseFee) * Math.pow(10, 9)),
+        };
+
+        return {
+            gasLimit: gasLimit,
+            fees: fees
         }
-        return { gasLimit: gasLimit, fees: fees}
     }
 }
 
