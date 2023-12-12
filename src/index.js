@@ -514,7 +514,7 @@ class KeyringController extends EventEmitter {
     }
 
     /**
-    * get Fees method to get the fees for Optimism Chain
+    * get Fees method to get the fees for Arbitrum Chain
     *
     * @param {Object} rawTx - Rawtransaction - {from,to,value,data, chainId}  
     * @param {Object} web3 - web3 object.
