@@ -16,7 +16,6 @@ const SimpleKeyring = require('eth-simple-keyring')
 const HdKeyring = require('eth-hd-keyring')
 
 const axios = require('axios')
-let chainId;
 
 const keyringTypes = [
     SimpleKeyring,
@@ -270,6 +269,8 @@ class KeyringController extends EventEmitter {
 
     const pkey = Buffer.from(privateKey, 'hex');
 
+    const chainId = rawTx.chainId;
+
     const common = Common.custom({ chainId: chainId }, { hardfork: Hardfork.London })
 
     const tx = FeeMarketEIP1559Transaction.fromTxData(rawTx, { common });
@@ -522,9 +523,8 @@ class KeyringController extends EventEmitter {
     */
     async getFees(rawTx, web3) {
         const { from, to, value, data } = rawTx
-        const gasLimit = await web3.eth.estimateGas({ to, from, value, data });
-        chainId = await web3.eth.getChainId();
-
+        const gasLimit = await web3.eth.estimateGas({ to, from, value, data })
+        
         const response = await axios({
             url: `https://gas-api.metaswap.codefi.network/networks/42161/suggestedGasFees`,
             method: 'GET',

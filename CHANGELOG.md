@@ -48,3 +48,4 @@
 
 - Added gas estimation for EIP-1559 transaction on arbitrum.
 - Added support for Type-2 transactions signing.
+- Removed 'signTransaction' dependency from 'getFees' method.
