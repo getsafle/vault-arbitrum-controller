@@ -43,3 +43,9 @@
 
 - Updated gasFee() method for type 1 transactions and added its test.
 - Changed license to MIT.
+
+### 1.0.9 (2023-12-12)
+
+- Added gas estimation for EIP-1559 transaction on arbitrum.
+- Added support for Type-2 transactions signing.
+- Removed 'signTransaction' dependency from 'getFees' method.

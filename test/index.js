@@ -66,7 +66,7 @@ describe('Initialize wallet ', () => {
     it("Create new vault and restore", async () => {
         const res = await arbitrumKeyring.createNewVaultAndRestore(PASSWORD, HD_WALLET_12_MNEMONIC)
         assert(arbitrumKeyring.keyrings[0].mnemonic === HD_WALLET_12_MNEMONIC, "Wrong mnemonic")
-    }) 
+    })
 
     it("Export account (privateKey)", async () => {
         const res = await arbitrumKeyring.getAccounts()
@@ -82,21 +82,21 @@ describe('Initialize wallet ', () => {
     })
 
     it("Get fees with manual gasLimit", async () => {
-    const accounts = await arbitrumKeyring.getAccounts()
-    const web3 = new Web3(TESTNET.URL);
-    const tx = {
-        gasLimit: 2100
-    }
-    const fees = await arbitrumKeyring.getFees(tx, web3)
-    console.log(" with manual gasLimit ", fees)
+        const accounts = await arbitrumKeyring.getAccounts()
+        const web3 = new Web3(TESTNET.URL);
+        const tx = {
+            gasLimit: 2100
+        }
+        const fees = await arbitrumKeyring.getFees(tx, web3)
+        console.log(" with manual gasLimit ", fees)
 
-    const privateKey = await arbitrumKeyring.exportAccount(accounts[0])
-    console.log('privatekey:',privateKey)
-    const tx3 = await arbitrumKeyring.sign(TESTING_MESSAGE_1, privateKey, web3)
-    console.log("tx3 ", tx3)
-   })
-  
-   it("Should import correct account ", async () => {
+        const privateKey = await arbitrumKeyring.exportAccount(accounts[0])
+        console.log('privatekey:', privateKey)
+        const tx3 = await arbitrumKeyring.sign(TESTING_MESSAGE_1, privateKey, web3)
+        console.log("tx3 ", tx3)
+    })
+
+    it("Should import correct account ", async () => {
         const address = await arbitrumKeyring.importWallet(EXTERNAL_ACCOUNT_PRIVATE_KEY)
         assert(address.toLowerCase() === EXTERNAL_ACCOUNT_ADDRESS.toLowerCase(), "Wrong address")
         assert(arbitrumKeyring.importedWallets.length === 1, "Should have 1 imported wallet")
@@ -121,7 +121,6 @@ describe('Initialize wallet ', () => {
         const getEstimate = await arbitrumKeyring.getFees(tx, web3)
         console.log(" get gas estimate  ", getEstimate)
     })
-
     it("sign Transaction ", async () => {
 
         const accounts = await arbitrumKeyring.getAccounts()
@@ -131,36 +130,32 @@ describe('Initialize wallet ', () => {
         const count = await web3.eth.getTransactionCount(from);
 
         const defaultNonce = await web3.utils.toHex(count);
+        const to = '0x641BB2596D8c0b32471260712566BF933a2f1a8e'
+
+        const getFeeEstimate = await arbitrumKeyring.getFees({
+            from, to,
+            value: web3.utils.numberToHex(web3.utils.toWei('0', 'ether')), data: "0x00"
+        }, web3);
+        console.log(getFeeEstimate);
+
+
 
         const rawTx = {
-            to: '0x9E1447ea3F6abA7a5D344B360B95Fd9BAE049448',
+            to,
             from,
-            value: web3.utils.numberToHex(web3.utils.toWei('0.01', 'ether')),
-            gasLimit: web3.utils.numberToHex(25000),
-            maxPriorityFeePerGas: web3.utils.numberToHex(web3.utils.toWei('55', 'gwei')),
-            maxFeePerGas: web3.utils.numberToHex(web3.utils.toWei('56', 'gwei')),
+            value: web3.utils.numberToHex(web3.utils.toWei('0', 'ether')),
+            gasLimit: getFeeEstimate.gasLimit,
+            maxPriorityFeePerGas: getFeeEstimate.fees.slow.maxPriorityFeePerGas,
+            maxFeePerGas: getFeeEstimate.fees.slow.maxFeePerGas,
             nonce: defaultNonce,
-            data: '0x00',
-            type: '0x2',
-            chainId: 421613,
-        };
-        /*
-        const rawTx2 = {
+            data: '0x',
             type: 2,
-            nonce: 0,
-            to: "0xacde0f575d8caf7bdba417326797c1a1d1b21f88", // Address to send to
-            maxPriorityFeePerGas: 10000, // Recommended maxPriorityFeePerGas
-            maxFeePerGas: 10000, // Recommended maxFeePerGas
-            value: web3.utils.toHex(1000000), // .01 ETH
-            gasLimit: "21000", // basic transaction costs exactly 21000
-            chainId: 421613, 
-          };
-        */
+            chainId: TESTNET.CHAIN_ID,
+        };
+
         const privateKey = await arbitrumKeyring.exportAccount(accounts[0])
         const signedTX = await arbitrumKeyring.signTransaction(rawTx, privateKey)
         console.log("signedTX ", signedTX)
 
-      //  const sentTX = await arbitrumKeyring.sendTransaction(signedTX, web3)
-       // console.log("sentTX ", sentTX)
     })
 })
